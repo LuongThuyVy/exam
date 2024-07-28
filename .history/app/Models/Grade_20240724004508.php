@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Grade extends Model
+{
+    use HasFactory;
+
+    protected $table = 'grades';
+
+    protected $fillable = [
+        'name'
+    ];
+
+    public $timestamps = false;
+
+    public function subjectGrades()
+    {
+        return $this->belongsToMany(Subject::class, 'subject_grades', 'GradeId', 'SubjectId');
+    }
+}
+
