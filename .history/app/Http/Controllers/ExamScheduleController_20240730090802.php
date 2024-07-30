@@ -7,43 +7,41 @@ use App\Models\Test;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-
 class ExamScheduleController extends Controller
 {
     public function getCurrentExamShifts(Request $request, $accountId)
     {
-        // Get current time in Vietnam timezone
-        $currentTime = Carbon::now('Asia/Ho_Chi_Minh');
-
-        // Fetch the Examinee based on AccountId
-        $examinee = Examinee::where('AccountId', $accountId)->first();
-
-        if (!$examinee) {
-            Log::error('Examinee not found', ['accountId' => $accountId]);
-            return response()->json(['message' => 'Examinee not found.'], 404);
-        }
-
-        // Fetch all tests for the examinee where completion time is null
-        $pendingTests = Test::where('ExamineeId', $examinee->Id)
-            ->whereNull('CompletionTime')
-            ->whereHas('examShift', function ($query) use ($currentTime) {
-                $query->where('StartTime', '<=', $currentTime)
-                      ->where('EndTime', '>=', $currentTime);
-            })
-            ->with(['examShift' => function ($query) {
-                $query->with(['exam.subjectGrade.subject', 'exam.subjectGrade.grade']);
-            }])
-            ->get();
-
-        // Format the pending tests
-        $formattedPendingTests = $pendingTests->map(function ($test) {
-            $examShift = $test->examShift;
-            $exam = $examShift->exam;
-
-            return [
-                'testId' => $test->Id,
-                'examineeId' => $test->ExamineeId,
-                'examShift' => [
+        {
+            // Fetch the Examinee based on AccountId
+            $examinee = Examinee::where('AccountId', $accountId)->first();
+            
+            if (!$examinee) {
+                return response()->json(['message' => 'Examinee not found.'], 404);
+            }
+        
+            // Get current time
+            $currentTime = Carbon::now();
+        
+            // Fetch all exam shifts with related exam, subject, and grade information
+            $allExamShifts = ExamShift::with(['exam.subjectGrade.subject', 'exam.subjectGrade.grade'])
+                ->where('EndTime', '>', $currentTime)
+                ->get();
+        
+            // Fetch exam shifts the examinee has already registered for
+            $registeredExamShifts = Test::where('ExamineeId', $examinee->Id)
+                ->pluck('ExamShiftId')
+                ->toArray();
+        
+            // Exclude registered exam shifts
+            $availableExamShifts = $allExamShifts->filter(function ($examShift) use ($registeredExamShifts) {
+                return !in_array($examShift->Id, $registeredExamShifts);
+            });
+        
+            // Format the available exam shifts
+            $formattedExamShifts = $availableExamShifts->map(function ($examShift) {
+                $exam = $examShift->exam;  // Exam model with additional fields
+        
+                return [
                     'id' => $examShift->Id,
                     'name' => $examShift->Name,
                     'startTime' => $examShift->StartTime,
@@ -69,10 +67,9 @@ class ExamScheduleController extends Controller
                             ] : null,
                         ] : null,
                     ] : null,
-                ]
-            ];
-        });
-
-        return response()->json($formattedPendingTests);
-    }
+                    'eId' => $examShift->ExamId,
+                ];
+            });
+        
+            return response()->json($formattedExamShifts->values());
 }

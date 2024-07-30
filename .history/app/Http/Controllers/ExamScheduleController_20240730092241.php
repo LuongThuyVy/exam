@@ -7,13 +7,12 @@ use App\Models\Test;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-
 class ExamScheduleController extends Controller
 {
-    public function getCurrentExamShifts(Request $request, $accountId)
+    public function getCurrentExamShifts(Request $request, $accountId, $date)
     {
-        // Get current time in Vietnam timezone
-        $currentTime = Carbon::now('Asia/Ho_Chi_Minh');
+        // Parse the date parameter to Carbon instance
+        $date = Carbon::parse($date);
 
         // Fetch the Examinee based on AccountId
         $examinee = Examinee::where('AccountId', $accountId)->first();
@@ -26,9 +25,9 @@ class ExamScheduleController extends Controller
         // Fetch all tests for the examinee where completion time is null
         $pendingTests = Test::where('ExamineeId', $examinee->Id)
             ->whereNull('CompletionTime')
-            ->whereHas('examShift', function ($query) use ($currentTime) {
-                $query->where('StartTime', '<=', $currentTime)
-                      ->where('EndTime', '>=', $currentTime);
+            ->whereHas('examShift', function ($query) use ($date) {
+                $query->where('StartTime', '<=', $date)
+                      ->where('EndTime', '>=', $date);
             })
             ->with(['examShift' => function ($query) {
                 $query->with(['exam.subjectGrade.subject', 'exam.subjectGrade.grade']);
@@ -41,13 +40,14 @@ class ExamScheduleController extends Controller
             $exam = $examShift->exam;
 
             return [
+                'time' => Carbon::now()->format('Y-m-d H:i:s'),
                 'testId' => $test->Id,
                 'examineeId' => $test->ExamineeId,
                 'examShift' => [
                     'id' => $examShift->Id,
                     'name' => $examShift->Name,
-                    'startTime' => $examShift->StartTime,
-                    'endTime' => $examShift->EndTime,
+                    'startTime' => $examShift->StartTime->format('Y-m-d H:i:s'),
+                    'endTime' => $examShift->EndTime->format('Y-m-d H:i:s'),
                     'subjectgrade' => $exam ? [
                         'Id' => $exam->Id,
                         'Name' => $exam->Name,

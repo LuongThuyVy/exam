@@ -9,8 +9,7 @@ class ExamQuestionController extends Controller
 {
     public function index($examId)
     {
-        // Fetch exam questions with related question answers
-        $examQuestions = ExamQuestion::with('question_answer')->where('ExamId', $examId)->get();
+        $examQuestions = ExamQuestion::where('ExamId', $examId)->get();
         return response()->json($examQuestions);
     }
 

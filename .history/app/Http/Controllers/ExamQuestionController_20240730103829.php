@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ExamQuestion;
 use Illuminate\Http\Request;
 
-class ExamQuestionController extends Controller
+    class ExamQuestionController extends Controller
 {
     public function index($examId)
     {
@@ -13,6 +13,7 @@ class ExamQuestionController extends Controller
         $examQuestions = ExamQuestion::with('question_answer')->where('ExamId', $examId)->get();
         return response()->json($examQuestions);
     }
+}
 
     public function store(Request $request)
     {

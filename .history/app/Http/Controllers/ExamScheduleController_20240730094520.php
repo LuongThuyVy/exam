@@ -41,6 +41,7 @@ class ExamScheduleController extends Controller
             $exam = $examShift->exam;
 
             return [
+                'timw' => Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(),
                 'testId' => $test->Id,
                 'examineeId' => $test->ExamineeId,
                 'examShift' => [

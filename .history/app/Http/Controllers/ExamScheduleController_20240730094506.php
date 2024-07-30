@@ -1,12 +1,4 @@
-<?php
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use App\Models\Examinee;
-use App\Models\Test;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-
 
 class ExamScheduleController extends Controller
 {
@@ -41,6 +33,7 @@ class ExamScheduleController extends Controller
             $exam = $examShift->exam;
 
             return [
+                'timw' => Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(),
                 'testId' => $test->Id,
                 'examineeId' => $test->ExamineeId,
                 'examShift' => [

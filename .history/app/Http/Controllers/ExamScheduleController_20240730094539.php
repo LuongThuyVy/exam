@@ -41,6 +41,7 @@ class ExamScheduleController extends Controller
             $exam = $examShift->exam;
 
             return [
+             
                 'testId' => $test->Id,
                 'examineeId' => $test->ExamineeId,
                 'examShift' => [

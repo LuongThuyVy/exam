@@ -7,13 +7,12 @@ use App\Models\Test;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-
 class ExamScheduleController extends Controller
 {
     public function getCurrentExamShifts(Request $request, $accountId)
     {
-        // Get current time in Vietnam timezone
-        $currentTime = Carbon::now('Asia/Ho_Chi_Minh');
+        // Get current time
+        $currentTime = Carbon::now();
 
         // Fetch the Examinee based on AccountId
         $examinee = Examinee::where('AccountId', $accountId)->first();

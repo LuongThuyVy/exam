@@ -7,13 +7,25 @@ use App\Models\Test;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
+use Carbon\Carbon;
+
+$utcTimestamp = '2024-07-30T02:41:31.512938Z';
+
+// Parse the UTC timestamp
+$carbonDate = Carbon::parse($utcTimestamp, 'UTC');
+
+// Convert to Vietnam timezone
+$vnDate = $carbonDate->setTimezone('Asia/Ho_Chi_Minh');
+
+// Format the date as needed
+echo $vnDate->format('Y-m-d H:i:s');
 
 class ExamScheduleController extends Controller
 {
     public function getCurrentExamShifts(Request $request, $accountId)
     {
-        // Get current time in Vietnam timezone
-        $currentTime = Carbon::now('Asia/Ho_Chi_Minh');
+        // Get current time
+        $currentTime = Carbon::now();
 
         // Fetch the Examinee based on AccountId
         $examinee = Examinee::where('AccountId', $accountId)->first();
@@ -41,6 +53,7 @@ class ExamScheduleController extends Controller
             $exam = $examShift->exam;
 
             return [
+                'timw'=> Carbon::now(),
                 'testId' => $test->Id,
                 'examineeId' => $test->ExamineeId,
                 'examShift' => [

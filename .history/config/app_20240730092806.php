@@ -68,6 +68,8 @@ return [
     */
 
     'timezone' => 'Asia/Ho_Chi_Minh',
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
