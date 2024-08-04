@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\QuestionAnswer;
 use App\Models\Subject;
 use App\Models\Grade;
-use App\Models\Exam;
 use App\Models\SubjectGrade;
 use Illuminate\Http\Request;
 
@@ -63,44 +62,22 @@ class QuestionAnswerController extends Controller
     
         return response()->json($question, 201);
     }
+
     public function getAllQuestions()
     {
-        // Lấy tất cả các câu hỏi cùng với SubjectGrade, Subject và Grade
-        $questions = QuestionAnswer::with(['subject_grade.subject', 'subject_grade.grade'])->get();
+        // Lấy tất cả các câu hỏi cùng với SubjectGrade
+        $questions = QuestionAnswer::with('subject_grade')->get();
         
         // Trả về dữ liệu dưới dạng JSON
         return response()->json($questions);
     }
+
     
-    
-    //lay cau hoi co mon hoc giong trong exam
-    public function getQuestionsWithCondition(Request $request, $examId)
+    public function getQuestionsW()
     {
-        // Kiểm tra xem examId có được truyền vào không
-        if (!$examId) {
-            return response()->json(['error' => 'ExamId is required'], 400);
-        }
-    
-        // Tìm Exam và lấy subjectGradeId
-        $exam = Exam::find($examId);
-    
-        if (!$exam) {
-            return response()->json(['error' => 'Exam not found'], 404);
-        }
-    
-        // Giả sử Exam có thuộc tính subjectGradeId hoặc bạn có cách để lấy subjectGradeId từ Exam
-        $subjectGradeId = $exam->SubjectGradeId;
-    
-        // Kiểm tra xem subjectGradeId có tồn tại không
-        if (!$subjectGradeId) {
-            return response()->json(['error' => 'SubjectGradeId not found in Exam'], 404);
-        }
-    
-        // Lấy tất cả các câu hỏi có subjectGradeId tương ứng
-        $questions = QuestionAnswer::where('SubjectGradeId', $subjectGradeId)
-            ->with('subject_grade')
-            ->get();
-    
+        // Lấy tất cả các câu hỏi cùng với SubjectGrade
+        $questions = QuestionAnswer::with('subject_grade')->get();
+        
         // Trả về dữ liệu dưới dạng JSON
         return response()->json($questions);
     }

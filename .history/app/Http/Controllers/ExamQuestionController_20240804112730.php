@@ -62,26 +62,20 @@ class ExamQuestionController extends Controller
         return response()->json($examQuestion, 200);
     }
 
-    public function destroy($id)
+    public function destroy($Id)
     {
-        try {
-            $examQuestion = ExamQuestion::where('Id', $id)->first(); // Tìm kiếm theo khóa chính
+        $examQuestion = ExamQuestion::find($id);
     
-            if (!$examQuestion) {
-                return response()->json(['message' => 'ExamQuestion not found'], 404);
-            }
-    
-            \Log::info('Deleting exam question: ' . $id);
-    
-            $examQuestion->delete();
-    
-            return response()->json(['message' => 'ExamQuestion deleted successfully'], 200);
-        } catch (\Exception $e) {
-            \Log::error('Error deleting exam question: ' . $e->getMessage());
-            return response()->json(['message' => 'Error deleting ExamQuestion'], 500);
+        if (!$examQuestion) {
+            return response()->json(['message' => 'ExamQuestion not found'], 404);
         }
-    }
     
+        \Log::info('Deleting exam question: ' . $id);
+    
+        $examQuestion->forceDelete(); // Sử dụng forceDelete nếu dùng Soft Deletes
+    
+        return response()->json(['message' => 'ExamQuestion deleted successfully'], 200);
+    }
     
     
 

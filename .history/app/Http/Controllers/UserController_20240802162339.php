@@ -42,23 +42,33 @@ public function getAllUsers(Request $request)
    
     public function updateLockStatus($id, Request $request)
 {
-    // Kiểm tra sự tồn tại của account
-    $account = Account::find($id);
-
+    $account = Account::where('Id', $id)->first();
+    Log::info('Query result:', ['account' => $account]);
     if (!$account) {
         return response()->json(['message' => 'Account not found'], 404);
     }
 
-    // Validate request input
-    $request->validate([
-        'LockEnable' => 'required|boolean'
-    ]);
+    Log::info('Updating account with Id: ' . $id);
+    Log::info('Request data:', $request->all());
 
-    // Cập nhật dữ liệu
-    $account->LockEnable = $request->input('LockEnable') ? 1 : 0; // Đảm bảo dữ liệu được lưu đúng kiểu
-    $account->save();
+    $newLockEnable = $request->has('LockEnable');
+    $account->LockEnable = $newLockEnable;
 
-    return response()->json(['message' => 'Account updated successfully'], 200);
+    Log::info('Account before save:', $account->getDirty());
+
+    DB::enableQueryLog();
+    $saved = $account->save();
+    Log::info('SQL Query:', DB::getQueryLog());
+
+    $account->refresh();
+    Log::info('Account after refresh:', $account->toArray());
+
+    Log::info('Save result: ', ['saved' => $saved]);
+
+    return response()->json([
+        'message' => 'Account updated successfully',
+        'lockEnable' => $account->LockEnable
+    ], 200);
 }
 
 public function updateUserInfo($id, Request $request)

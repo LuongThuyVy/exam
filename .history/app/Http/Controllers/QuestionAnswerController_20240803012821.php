@@ -65,15 +65,13 @@ class QuestionAnswerController extends Controller
     }
     public function getAllQuestions()
     {
-        // Lấy tất cả các câu hỏi cùng với SubjectGrade, Subject và Grade
-        $questions = QuestionAnswer::with(['subject_grade.subject', 'subject_grade.grade'])->get();
+        // Lấy tất cả các câu hỏi cùng với SubjectGrade
+        $questions = QuestionAnswer::with('subject_grade')->get();
         
         // Trả về dữ liệu dưới dạng JSON
         return response()->json($questions);
     }
     
-    
-    //lay cau hoi co mon hoc giong trong exam
     public function getQuestionsWithCondition(Request $request, $examId)
     {
         // Kiểm tra xem examId có được truyền vào không

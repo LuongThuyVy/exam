@@ -74,27 +74,27 @@ class QuestionAnswerController extends Controller
     
     
     //lay cau hoi co mon hoc giong trong exam
-    public function getQuestionsWithCondition(Request $request, $examId)
+    public function getQuestionsWithCondition(Request $SubjectGradeId)
     {
-        // Kiểm tra xem examId có được truyền vào không
-        if (!$examId) {
-            return response()->json(['error' => 'ExamId is required'], 400);
-        }
+        // // Kiểm tra xem examId có được truyền vào không
+        // if (!$examId) {
+        //     return response()->json(['error' => 'ExamId is required'], 400);
+        // }
     
-        // Tìm Exam và lấy subjectGradeId
-        $exam = Exam::find($examId);
+        // // Tìm Exam và lấy subjectGradeId
+        // $exam = Exam::find($examId);
     
-        if (!$exam) {
-            return response()->json(['error' => 'Exam not found'], 404);
-        }
+        // if (!$exam) {
+        //     return response()->json(['error' => 'Exam not found'], 404);
+        // }
     
-        // Giả sử Exam có thuộc tính subjectGradeId hoặc bạn có cách để lấy subjectGradeId từ Exam
-        $subjectGradeId = $exam->SubjectGradeId;
+        // // Giả sử Exam có thuộc tính subjectGradeId hoặc bạn có cách để lấy subjectGradeId từ Exam
+        // $subjectGradeId = $exam->SubjectGradeId;
     
-        // Kiểm tra xem subjectGradeId có tồn tại không
-        if (!$subjectGradeId) {
-            return response()->json(['error' => 'SubjectGradeId not found in Exam'], 404);
-        }
+        // // Kiểm tra xem subjectGradeId có tồn tại không
+        // if (!$subjectGradeId) {
+        //     return response()->json(['error' => 'SubjectGradeId not found in Exam'], 404);
+        // }
     
         // Lấy tất cả các câu hỏi có subjectGradeId tương ứng
         $questions = QuestionAnswer::where('SubjectGradeId', $subjectGradeId)

@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Log;
-
 
 use App\Models\ExamQuestion;
 use App\Models\ExamShift;
@@ -21,7 +19,8 @@ class ExamQuestionController extends Controller
     public function ExamDetail($id)
     {
         // Fetch exam questions with related question answers
-        $examQuestions = ExamQuestion::with('question_answer')->where('ExamId', $id)->get();
+        $examShift = ExamShift::find($id);
+        $examQuestions = ExamQuestion::with('question_answer')->where('ExamId', $examShift->ExamId)->get();
         return response()->json($examQuestions);
     }
 
@@ -64,55 +63,19 @@ class ExamQuestionController extends Controller
 
     public function destroy($id)
     {
-        try {
-            $examQuestion = ExamQuestion::where('Id', $id)->first(); // Tìm kiếm theo khóa chính
-    
-            if (!$examQuestion) {
-                return response()->json(['message' => 'ExamQuestion not found'], 404);
-            }
-    
-            \Log::info('Deleting exam question: ' . $id);
-    
-            $examQuestion->delete();
-    
-            return response()->json(['message' => 'ExamQuestion deleted successfully'], 200);
-        } catch (\Exception $e) {
-            \Log::error('Error deleting exam question: ' . $e->getMessage());
-            return response()->json(['message' => 'Error deleting ExamQuestion'], 500);
-        }
-    }
-    
-    
-    
+        $examQuestion = ExamQuestion::find($id);
 
-    public function addQuestions(Request $request)
-    {
-        $request->validate([
-            'examId' => 'required|integer',
-            'questionIds' => 'required|array',
-            'questionIds.*' => 'integer',
-        ]);
-    
-        $examId = $request->examId;
-        $sequence = ExamQuestion::where('ExamId', $examId)->max('Sequence') + 1;
-    
-        Log::info('Starting to add questions to exam', ['examId' => $examId, 'questionIds' => $request->questionIds]);
-    
-        foreach ($request->questionIds as $questionId) {
-            ExamQuestion::create([
-                'Sequence' => $sequence,
-                'ExamId' => $examId,
-                'QuestionAnswerId' => $questionId
-            ]);
-    
-            Log::info('Added question to exam', ['examId' => $examId, 'questionId' => $questionId, 'sequence' => $sequence]);
-    
-            $sequence++;
+        if (!$examQuestion) {
+            return response()->json(['message' => 'ExamQuestion not found'], 404);
         }
-    
-        Log::info('Finished adding questions to exam', ['examId' => $examId, 'totalQuestionsAdded' => count($request->questionIds)]);
-    
-        return response()->json(['message' => 'Questions added successfully'], 201);
+
+        // Log dữ liệu trước khi xóa
+        \Log::info('Deleting exam question: ' . $id);
+
+        $examQuestion->delete();
+
+        return response()->json(['message' => 'ExamQuestion deleted successfully'], 200);
     }
+
 }
 

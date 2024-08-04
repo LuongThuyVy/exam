@@ -57,7 +57,7 @@ Route::put('/subject-grades/{id}', [SubjectGradeController::class, 'update']);
 Route::delete('/subject-grades/{id}', [SubjectGradeController::class, 'destroy']);
 
 Route::get('/questions', [QuestionAnswerController::class, 'getAllQuestions']);
-Route::get('/questions/condition/{examId}', [QuestionAnswerController::class, 'getQuestionsWithCondition']); //examid 
+Route::get('/questions/{id}', [QuestionAnswerController::class, 'destroy']);
 Route::post('/questions', [QuestionAnswerController::class, 'store']);
 Route::put('/questions/{id}', [QuestionAnswerController::class, 'update']);
 Route::delete('/questions/{id}', [QuestionAnswerController::class, 'destroy']);

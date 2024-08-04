@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\QuestionAnswer;
 use App\Models\Subject;
 use App\Models\Grade;
-use App\Models\Exam;
 use App\Models\SubjectGrade;
 use Illuminate\Http\Request;
 
@@ -63,17 +62,6 @@ class QuestionAnswerController extends Controller
     
         return response()->json($question, 201);
     }
-    public function getAllQuestions()
-    {
-        // Lấy tất cả các câu hỏi cùng với SubjectGrade, Subject và Grade
-        $questions = QuestionAnswer::with(['subject_grade.subject', 'subject_grade.grade'])->get();
-        
-        // Trả về dữ liệu dưới dạng JSON
-        return response()->json($questions);
-    }
-    
-    
-    //lay cau hoi co mon hoc giong trong exam
     public function getQuestionsWithCondition(Request $request, $examId)
     {
         // Kiểm tra xem examId có được truyền vào không

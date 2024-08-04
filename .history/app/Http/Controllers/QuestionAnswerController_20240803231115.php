@@ -74,7 +74,7 @@ class QuestionAnswerController extends Controller
     
     
     //lay cau hoi co mon hoc giong trong exam
-    public function getQuestionsWithCondition(Request $request, $examId)
+    public function getQuestionsWithCondition(Request $request)
     {
         // Kiểm tra xem examId có được truyền vào không
         if (!$examId) {

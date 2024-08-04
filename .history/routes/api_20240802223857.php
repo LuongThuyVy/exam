@@ -37,7 +37,8 @@ Route::delete('/exam-shifts/{id}', [ExamShiftController::class, 'destroy']);
 Route::get('/exam-shifts/user/{id}', [ExamShiftController::class, 'getAvailableExamShifts']);
 
 Route::get('exam-questions/{id}', [ExamQuestionController::class, 'index']); //examshiftid
-Route::get('exam-detail/{id}', [ExamQuestionController::class, 'ExamDetail']); //examid
+Route::get('exam-questions/{id}', [ExamQuestionController::class, 'index']); //examshiftid
+
 Route::post('exam-questions', [ExamQuestionController::class, 'store']);
 Route::put('exam-questions/{id}', [ExamQuestionController::class, 'update']);
 Route::delete('exam-questions/{id}', [ExamQuestionController::class, 'destroy']);
@@ -57,7 +58,6 @@ Route::put('/subject-grades/{id}', [SubjectGradeController::class, 'update']);
 Route::delete('/subject-grades/{id}', [SubjectGradeController::class, 'destroy']);
 
 Route::get('/questions', [QuestionAnswerController::class, 'getAllQuestions']);
-Route::get('/questions/condition/{examId}', [QuestionAnswerController::class, 'getQuestionsWithCondition']); //examid 
 Route::post('/questions', [QuestionAnswerController::class, 'store']);
 Route::put('/questions/{id}', [QuestionAnswerController::class, 'update']);
 Route::delete('/questions/{id}', [QuestionAnswerController::class, 'destroy']);

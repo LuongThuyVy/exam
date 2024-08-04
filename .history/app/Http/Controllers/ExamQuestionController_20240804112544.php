@@ -65,7 +65,7 @@ class ExamQuestionController extends Controller
     public function destroy($id)
     {
         try {
-            $examQuestion = ExamQuestion::where('Id', $id)->first(); // Tìm kiếm theo khóa chính
+            $examQuestion = ExamQuestion::find($id);
     
             if (!$examQuestion) {
                 return response()->json(['message' => 'ExamQuestion not found'], 404);
@@ -81,8 +81,6 @@ class ExamQuestionController extends Controller
             return response()->json(['message' => 'Error deleting ExamQuestion'], 500);
         }
     }
-    
-    
     
 
     public function addQuestions(Request $request)

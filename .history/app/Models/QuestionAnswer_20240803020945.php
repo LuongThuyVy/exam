@@ -13,7 +13,7 @@ class QuestionAnswer extends Model
     protected $primaryKey = 'Id';
 
     protected $fillable = [
-        'Id',
+        'Id'
         'Content',
         'Difficulty',
         'OptionA',

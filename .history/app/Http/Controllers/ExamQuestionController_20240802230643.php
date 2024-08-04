@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Log;
-
 
 use App\Models\ExamQuestion;
 use App\Models\ExamShift;
@@ -64,33 +62,26 @@ class ExamQuestionController extends Controller
 
     public function destroy($id)
     {
-        try {
-            $examQuestion = ExamQuestion::where('Id', $id)->first(); // Tìm kiếm theo khóa chính
-    
-            if (!$examQuestion) {
-                return response()->json(['message' => 'ExamQuestion not found'], 404);
-            }
-    
-            \Log::info('Deleting exam question: ' . $id);
-    
-            $examQuestion->delete();
-    
-            return response()->json(['message' => 'ExamQuestion deleted successfully'], 200);
-        } catch (\Exception $e) {
-            \Log::error('Error deleting exam question: ' . $e->getMessage());
-            return response()->json(['message' => 'Error deleting ExamQuestion'], 500);
+        $examQuestion = ExamQuestion::find($id);
+
+        if (!$examQuestion) {
+            return response()->json(['message' => 'ExamQuestion not found'], 404);
         }
+
+        // Log dữ liệu trước khi xóa
+        \Log::info('Deleting exam question: ' . $id);
+
+        $examQuestion->delete();
+
+        return response()->json(['message' => 'ExamQuestion deleted successfully'], 200);
     }
-    
-    
-    
 
     public function addQuestions(Request $request)
     {
         $request->validate([
-            'examId' => 'required|integer',
+            'examId' => 'required|integer,
             'questionIds' => 'required|array',
-            'questionIds.*' => 'integer',
+            'questionIds.*' => 'integer,
         ]);
     
         $examId = $request->examId;
